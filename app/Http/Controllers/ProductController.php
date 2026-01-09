@@ -9,12 +9,25 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::where('is_active', true)->with('category')->get();
+        // Get categories that are not "supplies" with their products
+        $speciesCategories = \App\Models\Category::where('slug', '!=', 'supplies')
+            ->with(['products' => function($q) {
+                $q->where('is_active', true)
+                  ->orderByRaw("FIELD(name, 'Grade A+', 'Grade A', 'Grade B', 'Standard') ASC") // Try to sort by grade if possible, but names are dynamic
+                  ->orderBy('name', 'ASC');
+            }])
+            ->get();
+
+        $supplies = Product::whereHas('category', function($q) {
+            $q->where('slug', 'supplies');
+        })->where('is_active', true)->get();
+
+        // For the header/mega-menu if used
         $categories = \App\Models\Category::with(['products' => function($q) {
             $q->where('is_active', true)->take(6);
         }])->get();
 
-        return view('welcome', compact('products', 'categories'));
+        return view('welcome', compact('speciesCategories', 'categories', 'supplies'));
     }
 
     public function show($slug)

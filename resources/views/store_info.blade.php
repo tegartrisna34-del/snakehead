@@ -14,7 +14,7 @@
 </head>
 <body class="antialiased min-h-screen py-20 px-4">
     <!-- Navigation -->
-    <nav class="fixed w-full z-50 px-6 py-6 items-center flex justify-center">
+    <nav id="mainNav" class="fixed w-full z-50 px-6 py-6 items-center flex justify-center transition-transform duration-500 ease-in-out">
         <div class="max-w-7xl w-full glass rounded-full px-8 py-4 flex justify-between items-center border-white/10">
             <div class="flex items-center space-x-3">
                 <img src="{{ asset('images/logo.png') }}" class="h-10 w-10 object-contain" alt="Logo">
@@ -27,8 +27,8 @@
     </nav>
 
     <div class="max-w-6xl mx-auto pt-32">
-        <h1 class="text-5xl font-bold mb-4 text-center">Our Story</h1>
-        <p class="text-gray-400 text-center mb-16">Discover our heritage, mission, and how we cultivate premium predatory fish for enthusiasts worldwide.</p>
+        <h1 class="text-5xl font-bold mb-4 text-center">Informasi</h1>
+        <p class="text-gray-400 text-center mb-16">Menyediakan Channa kualitas premium dengan genetik terbaik untuk kolektor di seluruh Indonesia.</p>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
             <!-- Store Information -->
@@ -38,7 +38,7 @@
                 <div class="space-y-6">
                     <!-- Alamat -->
                     <div>
-                        <h3 class="text-lg font-bold text-emerald-400 mb-2">Address</h3>
+                        <h3 class="text-lg font-bold text-emerald-400 mb-2">Alamat</h3>
                         <p class="text-gray-300 leading-relaxed">
                             72Q6+4HR Ngeposan, RT.2/RW.13<br>
                             Purworejo, Kec. Purworejo<br>
@@ -60,8 +60,8 @@
                     <!-- Email -->
                     <div>
                         <h3 class="text-lg font-bold text-emerald-400 mb-2">Email</h3>
-                        <a href="mailto:info@snakeheadculture.com" class="text-emerald-500 hover:text-emerald-400 font-bold">
-                            info@snakeheadculture.com
+                        <a href="mailto:snakeheadculture@gmail.com" class="text-emerald-500 hover:text-emerald-400 font-bold">
+                            snakeheadculture@gmail.com
                         </a>
                     </div>
 
@@ -77,7 +77,7 @@
 
                     <!-- Social / Shop Links -->
                     <div>
-                        <h3 class="text-lg font-bold text-emerald-400 mb-2">Social & Shop</h3>
+                        <h3 class="text-lg font-bold text-emerald-400 mb-2">Media Sosial & Marketplace</h3>
                         <ul class="text-gray-300 space-y-2">
                             <li>
                                 <a href="https://www.tiktok.com/@snakeheadculture?_r=1&_t=ZS-92l7rujZHov" target="_blank" class="text-emerald-400 hover:underline">TikTok: @snakeheadculture</a>
@@ -125,5 +125,22 @@
             </a>
         </div>
     </div>
+
+    <script>
+        // Smart Navbar Logic
+        (function() {
+            const nav = document.getElementById('mainNav');
+            let lastScrollY = window.scrollY;
+
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > lastScrollY && window.scrollY > 100) {
+                    nav.style.transform = 'translateY(-120%)';
+                } else {
+                    nav.style.transform = 'translateY(0)';
+                }
+                lastScrollY = window.scrollY;
+            });
+        })();
+    </script>
 </body>
 </html>

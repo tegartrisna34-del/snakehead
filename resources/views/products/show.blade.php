@@ -4,9 +4,33 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $product->name }} - Snakehead Culture</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>body{background:#0c1117;color:#e6edf3;font-family:Outfit, sans-serif}.glass{background:rgba(255,255,255,0.04);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.06)}</style>
+    <style>
+        body{background:#0c1117;color:#e6edf3;font-family:Outfit, sans-serif}
+        .glass{background:rgba(255,255,255,0.04);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.06)}
+        h1, h2, h3, .font-syne { font-family: 'Syne', sans-serif; }
+        
+        .hero-bottom-mask {
+            mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 100%);
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+        .animate-float { animation: float 6s ease-in-out infinite; }
+        
+        .text-glow {
+            text-shadow: 0 0 30px rgba(16, 185, 129, 0.5);
+        }
+        
+        .btn-glow:hover {
+            box-shadow: 0 10px 40px rgba(16, 185, 129, 0.4);
+            transform: translateY(-2px);
+        }
+    </style>
 </head>
 <body class="antialiased py-24">
     <div class="max-w-5xl mx-auto px-6">
@@ -25,23 +49,42 @@
                 <div class="mb-4">
                     <span class="text-xs font-bold uppercase tracking-widest">STOK</span>
                     <div class="mt-2">
-                        <span class="px-3 py-1 rounded-full text-xs font-bold {{ $product->stock > 5 ? 'bg-emerald-500/20 text-emerald-400' : ($product->stock > 0 ? 'bg-yellow-500/20 text-yellow-400' : 'bg-red-500/20 text-red-400') }}">{{ $product->stock ?? 0 }} Unit</span>
+                        <span class="px-3 py-1 rounded-full text-xs font-bold {{ $product->stock > 5 ? 'bg-emerald-500/20 text-emerald-400' : ($product->stock > 0 ? 'bg-yellow-500/20 text-yellow-400' : 'bg-red-500/20 text-red-400') }}">{{ $product->stock ?? 0 }} {{ $product->unit ?? 'Ekor' }}</span>
                     </div>
                 </div>
 
-                <p class="text-gray-300 leading-relaxed mb-6">{{ $product->description }}</p>
+                <p class="text-gray-300 leading-relaxed mb-8">{{ $product->description }}</p>
 
-                <p class="text-sm text-gray-400">For more species information, see our <a href="{{ route('species') }}" class="text-emerald-400 hover:underline">Species Reference</a>.</p>
+                @if($product->specifications)
+                <div class="mb-8 p-6 bg-white/5 rounded-2xl border border-white/5">
+                    <h3 class="text-sm font-bold uppercase tracking-widest text-emerald-400 mb-4">Spesifikasi Detail</h3>
+                    <div class="space-y-3">
+                        @foreach($product->specifications as $key => $value)
+                        <div class="flex justify-between border-b border-white/5 pb-2 last:border-0 last:pb-0">
+                            <span class="text-gray-500 text-sm">{{ $key }}</span>
+                            <span class="text-gray-300 text-sm font-semibold">{{ $value }}</span>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
 
-                        @auth
+                <p class="text-sm text-gray-400 mb-8">Informasi lebih lanjut mengenai spesies? Lihat <a href="{{ route('species') }}" class="text-emerald-400 hover:underline">Referensi Spesies</a> kami.</p>
+
+                @auth
                     <form action="{{ route('cart.add', $product->id) }}" method="POST" class="space-y-4">
                         @csrf
-                        <div>
-                            <label class="text-sm text-gray-300 mb-1 block">Jumlah</label>
-                            <input type="number" name="quantity" value="1" min="1" max="{{ max(1, $product->stock) }}" class="w-40 px-4 py-2 rounded bg-white/5 text-white outline-none">
+                        <div class="flex items-center space-x-4">
+                            <div class="flex-1">
+                                <label class="text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-1 block">Jumlah</label>
+                                <input type="number" name="quantity" value="1" min="1" max="{{ max(1, $product->stock) }}" class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white outline-none focus:border-emerald-500/50 transition-colors">
+                            </div>
+                            <div class="flex-none pt-5">
+                                <span class="text-gray-500 text-sm">/ {{ $product->stock }} tersedia</span>
+                            </div>
                         </div>
                         <input type="hidden" name="product_id" value="{{ $product->id }}">
-                        <button type="submit" class="w-full py-4 bg-[#0b0b0b] rounded-2xl border border-white/6 text-white font-bold uppercase tracking-widest hover:shadow-[0_10px_30px_rgba(0,0,0,0.6)] transition-all">
+                        <button type="submit" class="w-full py-5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold uppercase tracking-widest rounded-2xl transition-all shadow-[0_10px_30px_rgba(16,185,129,0.2)] hover:shadow-[0_15px_40px_rgba(16,185,129,0.4)] hover:-translate-y-1">
                             Tambah ke Keranjang
                         </button>
                     </form>
@@ -69,5 +112,8 @@
             </div>
         </div>
     </div>
+
+
+
 </body>
 </html>

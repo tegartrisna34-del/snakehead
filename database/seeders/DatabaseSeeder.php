@@ -12,8 +12,15 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // Clear existing data to avoid duplicates/confusion
+        \Illuminate\Support\Facades\DB::statement('SET FOREIGN_KEY_CHECKS=0');
         Product::truncate();
         Category::truncate();
+        \Illuminate\Support\Facades\DB::statement('SET FOREIGN_KEY_CHECKS=1');
+
+        $this->call([
+            UserSeeder::class,
+            EssentialCareSeeder::class,
+        ]);
 
         $categories = [
             ['name' => 'Channa Maru', 'image' => 'channa_maru_grade_aplus.png'],

@@ -14,7 +14,7 @@
     </style>
 </head>
 <body>
-    <nav class="fixed w-full z-50 px-6 py-6 items-center flex justify-center">
+    <nav id="mainNav" class="fixed w-full z-50 px-6 py-6 items-center flex justify-center transition-transform duration-500 ease-in-out">
         <div class="max-w-7xl w-full glass rounded-full px-8 py-4 flex justify-between items-center border-white/10">
             <div class="flex items-center space-x-3">
                 <img src="{{ asset('images/logo.png') }}" class="h-10 w-10 object-contain" alt="Logo">
@@ -25,10 +25,27 @@
                 <a href="/" class="hover:text-emerald-400 transition-colors">Home</a>
             </div>
             <div class="flex items-center space-x-6">
-                <a href="#" class="relative">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                @guest
+                    <a href="{{ url('/login') }}" class="text-gray-300 hover:text-emerald-400 transition-colors" title="Login">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                    </a>
+                @endguest
+                @auth
+                    <a href="{{ route('admin.dashboard') }}" class="text-emerald-400 hover:text-emerald-300 transition-colors" title="Dashboard">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                    </a>
+                @endauth
+                <a href="{{ route('checkout.index') }}" class="relative group">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hover:text-emerald-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                     </svg>
+                    @if(session('cart'))
+                        <span class="absolute -top-2 -right-2 bg-emerald-500 text-[10px] font-bold rounded-full h-5 w-5 flex items-center justify-center border-2 border-[#050505]">{{ count(session('cart')) }}</span>
+                    @endif
                 </a>
             </div>
         </div>
@@ -50,7 +67,7 @@
                             <div class="flex justify-between items-center mt-2">
                                 <div class="text-emerald-500 font-bold">Rp {{ number_format($product->price,0,',','.') }}</div>
                                 <span class="px-2 py-1 rounded text-xs font-bold {{ $product->stock > 5 ? 'bg-emerald-500/20 text-emerald-400' : ($product->stock > 0 ? 'bg-yellow-500/20 text-yellow-400' : 'bg-red-500/20 text-red-400') }}">
-                                    {{ $product->stock ?? 0 }} Unit
+                                    {{ $product->stock ?? 0 }} Ekor
                                 </span>
                             </div>
                             <p class="text-gray-400 mt-2 line-clamp-3">{{ $product->description }}</p>
@@ -112,4 +129,20 @@
 
         items.forEach(i => io.observe(i));
     });
+</script>
+<script>
+    // Smart Navbar Logic
+    (function() {
+        const nav = document.getElementById('mainNav');
+        let lastScrollY = window.scrollY;
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > lastScrollY && window.scrollY > 100) {
+                nav.style.transform = 'translateY(-120%)';
+            } else {
+                nav.style.transform = 'translateY(0)';
+            }
+            lastScrollY = window.scrollY;
+        });
+    })();
 </script>

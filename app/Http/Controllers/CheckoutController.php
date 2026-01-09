@@ -41,6 +41,7 @@ class CheckoutController extends Controller
 
         $order = Order::create([
             'order_number' => 'ORD-' . strtoupper(Str::random(10)),
+            'user_id' => auth()->id(),
             'total_amount' => $total,
             'status' => 'pending',
             'payment_status' => 'unpaid',
@@ -66,11 +67,15 @@ class CheckoutController extends Controller
 
     public function success($orderNumber)
     {
-        return view('checkout_success', compact('orderNumber'));
+        $order = Order::where('order_number', $orderNumber)->firstOrFail();
+        return view('checkout_success', compact('order'));
     }
 
     /**
-     * Demo shipping cost endpoint. Replace with real API integration (ongkoskirim.id)
+     * Demo shipping cost endpoint. 
+     * To integreat with ongkoskirim.id:
+     * 1. Register at ongkoskirim.id to get API Key
+     * 2. Use Http::withHeaders(['key' => 'YOUR_KEY'])->post('https://api.ongkoskirim.id/v1/cost', ...)
      */
     public function shippingCost(Request $request)
     {
@@ -79,28 +84,40 @@ class CheckoutController extends Controller
             'destination_city' => 'required|string',
         ]);
 
-        // Simple demo tariff table (IDR) - in real app call ongkoskirim.id API
-        $base = [
+        // Mock Logic for Demo
+        $baseRates = [
             'jne' => 15000,
             'jnt' => 14000,
             'sicepat' => 13000,
+            'pos' => 12000,
         ];
 
-        $multiplier = 1;
-        $city = strtolower($request->destination_city);
-        // crude distance-like multiplier examples
-        if (strpos($city, 'jakarta') !== false) $multiplier = 1;
-        elseif (strpos($city, 'purworejo') !== false) $multiplier = 1.1;
-        else $multiplier = 1.4;
-
         $courier = strtolower($request->courier);
-        $cost = isset($base[$courier]) ? (int) round($base[$courier] * $multiplier) : (int) round(18000 * $multiplier);
+        $base = $baseRates[$courier] ?? 15000;
+        
+        $city = strtolower($request->destination_city);
+        $multiplier = 1.0;
+
+        // Simple distance simulation based on city name
+        if (str_contains($city, 'jakarta') || str_contains($city, 'bogor') || str_contains($city, 'depok') || str_contains($city, 'tangerang') || str_contains($city, 'bekasi')) {
+            $multiplier = 1.0; // Jabodetabek
+        } elseif (str_contains($city, 'bandung') || str_contains($city, 'semarang') || str_contains($city, 'yogyakarta') || str_contains($city, 'surabaya')) {
+            $multiplier = 1.2; // Java Main Cities
+        } elseif (str_contains($city, 'medan') || str_contains($city, 'palembang') || str_contains($city, 'makassar') || str_contains($city, 'denpasar')) {
+            $multiplier = 1.8; // Outer Islands
+        } else {
+            $multiplier = 1.5; // Others
+        }
+
+        $cost = (int) round($base * $multiplier);
 
         return response()->json([
             'success' => true,
-            'courier' => $courier,
+            'courier' => strtoupper($courier),
             'destination' => $request->destination_city,
             'cost' => $cost,
+            'service' => 'REG (Regular)',
+            'etd' => '2-3 Days',
             'currency' => 'IDR'
         ]);
     }
