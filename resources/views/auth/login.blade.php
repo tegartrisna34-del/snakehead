@@ -56,13 +56,13 @@
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center p-6 bg-cover bg-center" style="background-image: linear-gradient(rgba(5,5,5,0.9), rgba(5,5,5,0.9)), url('{{ asset('images/hero_bg.jpg') }}');">
     
-    <div class="w-full max-w-[440px] z-10">
+    <div class="w-full max-w-[420px] z-10">
         <div class="glass auth-card overflow-hidden">
-            <div class="p-10 pb-8">
-                <div class="text-center mb-10">
-                    <img src="{{ asset('images/logo.png') }}" class="h-12 w-12 mx-auto mb-6 grayscale brightness-200 opacity-80" alt="Logo">
-                    <h1 class="text-2xl font-bold font-syne tracking-tight mb-2 uppercase italic">Sign in to <span class="text-emerald-500">Culture</span></h1>
-                    <p class="text-[0.85rem] text-gray-500 font-medium">Welcome back! Join the sanctuary.</p>
+            <div class="p-8 pb-6">
+                <div class="text-center mb-8">
+                    <img src="{{ asset('images/logo.png') }}" class="h-10 w-10 mx-auto mb-4 grayscale brightness-200 opacity-80" alt="Logo">
+                    <h1 class="text-xl font-bold font-syne tracking-tight mb-2 uppercase italic">Sign in to <span class="text-emerald-500">Culture</span></h1>
+                    <p class="text-[0.8rem] text-gray-500 font-medium">Welcome back! Join the sanctuary.</p>
                 </div>
 
                 <!-- Social Login -->
@@ -77,30 +77,30 @@
                     <div class="flex-grow border-t border-white/5"></div>
                 </div>
 
-                <form action="{{ route('login') }}" method="POST" class="space-y-6">
+                <form action="{{ route('login') }}" method="POST" class="space-y-4">
                     @csrf
                     
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 ml-1">Identity (Email)</label>
+                    <div class="space-y-1">
+                        <label class="text-[9px] font-bold uppercase tracking-[0.2em] text-gray-500 ml-1">Identity (Email)</label>
                         <input type="email" name="email" value="{{ old('email') }}" required autofocus
-                            class="input-field w-full px-5 py-4 rounded-xl outline-none text-[0.9rem] text-white placeholder-gray-600" 
+                            class="input-field w-full px-5 py-3.5 rounded-xl outline-none text-[0.85rem] text-white placeholder-gray-600" 
                             placeholder="your@sanctuary.com">
                         @error('email')
-                            <p class="text-emerald-500 text-[10px] mt-1 ml-1">{{ $message }}</p>
+                            <p class="text-emerald-500 text-[9px] mt-1 ml-1">{{ $message }}</p>
                         @enderror
                     </div>
 
-                    <div class="space-y-2">
+                    <div class="space-y-1">
                         <div class="flex justify-between items-center px-1">
-                            <label class="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500">Access Key</label>
-                            <a href="#" class="text-[10px] font-bold uppercase text-emerald-500/50 hover:text-emerald-500 transition-colors">Forgot?</a>
+                            <label class="text-[9px] font-bold uppercase tracking-[0.2em] text-gray-500">Access Key</label>
+                            <a href="#" class="text-[9px] font-bold uppercase text-emerald-500/50 hover:text-emerald-500 transition-colors">Forgot?</a>
                         </div>
                         <input type="password" name="password" required 
-                            class="input-field w-full px-5 py-4 rounded-xl outline-none text-[0.9rem] text-white placeholder-gray-600" 
+                            class="input-field w-full px-5 py-3.5 rounded-xl outline-none text-[0.85rem] text-white placeholder-gray-600" 
                             placeholder="••••••••">
                     </div>
 
-                    <button type="submit" class="btn-premium w-full py-4.5 text-[0.85rem] font-extrabold uppercase tracking-[0.2em] rounded-xl flex items-center justify-center space-x-2">
+                    <button type="submit" class="btn-premium w-full py-4 text-[0.8rem] font-extrabold uppercase tracking-[0.2em] rounded-xl flex items-center justify-center space-x-2">
                         <span>Authenticate</span>
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
@@ -109,27 +109,27 @@
                 </form>
             </div>
 
-            <div class="px-10 py-6 bg-white/5 border-t border-white/5 text-center">
-                <p class="text-[0.75rem] text-gray-500 font-medium uppercase tracking-widest">
+            <div class="px-8 py-5 bg-white/5 border-t border-white/5 text-center">
+                <p class="text-[0.7rem] text-gray-500 font-medium uppercase tracking-widest">
                     No access key? 
                     <a href="{{ route('register') }}" class="text-emerald-500 font-bold hover:underline ml-1">Initialize Portal</a>
                 </p>
             </div>
 
-            <div class="px-10 py-8 text-center bg-black/20">
-                <div class="flex flex-col items-center space-y-3">
-                    <p class="text-[9px] text-gray-600 font-bold uppercase tracking-[0.3em]">Architected by <span class="text-gray-400">Snakehead Core</span></p>
+            <div class="px-8 py-6 text-center bg-black/20">
+                <div class="flex flex-col items-center space-y-2">
+                    <p class="text-[8px] text-gray-600 font-bold uppercase tracking-[0.3em]">Architected by <span class="text-gray-400">Snakehead Core</span></p>
                     <div class="px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
-                        <p class="text-[8px] font-black text-emerald-500 uppercase tracking-[0.2em]">Sanctuary Active</p>
+                        <p class="text-[7.5px] font-black text-emerald-500 uppercase tracking-[0.2em]">Sanctuary Active</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="mt-8 text-center flex items-center justify-center space-x-4">
-            <a href="{{ route('home') }}" class="text-[0.7rem] font-bold uppercase tracking-widest text-gray-600 hover:text-emerald-500 transition-colors">← Return Home</a>
+        <div class="mt-6 text-center flex items-center justify-center space-x-4">
+            <a href="{{ route('home') }}" class="text-[0.65rem] font-bold uppercase tracking-widest text-gray-600 hover:text-emerald-500 transition-colors">← Return Home</a>
             <span class="text-gray-800">|</span>
-            <span class="text-[0.7rem] font-bold uppercase tracking-widest text-gray-700">v2.4.1</span>
+            <span class="text-[0.65rem] font-bold uppercase tracking-widest text-gray-700">v2.4.1</span>
         </div>
     </div>
     

@@ -1,12 +1,12 @@
 @extends('layouts.admin')
 
-@section('title', 'Manajemen Kategori')
+@section('title', 'Category Management')
 
 @section('content')
     <header class="flex justify-between items-center mb-10">
-        <h2 class="text-3xl font-bold">Kategori Produk</h2>
+        <h2 class="text-3xl font-bold">Product Categories</h2>
         <a href="{{ route('admin.categories.create') }}" class="px-6 py-3 snake-gradient rounded-xl font-bold hover:opacity-90 transition">
-            + Tambah Kategori
+            + Add Category
         </a>
     </header>
 
@@ -20,10 +20,10 @@
         <table class="w-full text-left">
             <thead class="bg-white/5 text-xs uppercase text-gray-500">
                 <tr>
-                    <th class="px-8 py-4">Nama Kategori</th>
+                    <th class="px-8 py-4">Category Name</th>
                     <th class="px-8 py-4">Slug</th>
-                    <th class="px-8 py-4">Jumlah Produk</th>
-                    <th class="px-8 py-4">Aksi</th>
+                    <th class="px-8 py-4">Product Count</th>
+                    <th class="px-8 py-4">Action</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-white/5">
@@ -31,7 +31,7 @@
                 <tr>
                     <td class="px-8 py-4 font-medium">{{ $category->name }}</td>
                     <td class="px-8 py-4 text-gray-400 font-mono">{{ $category->slug }}</td>
-                    <td class="px-8 py-4">{{ $category->products_count }} item</td>
+                    <td class="px-8 py-4">{{ $category->products_count }} items</td>
                     <td class="px-8 py-4">
                         <div class="flex items-center space-x-3">
                             <a href="{{ route('admin.categories.edit', $category) }}" class="p-2 hover:bg-emerald-500/10 text-emerald-500 rounded-lg transition">

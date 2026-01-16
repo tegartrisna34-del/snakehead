@@ -13,21 +13,21 @@
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
         <a href="{{ route('admin.orders.index') }}" class="glass p-8 rounded-3xl hover:bg-emerald-500/5 transition group">
-            <p class="text-gray-500 text-sm font-bold uppercase tracking-widest">Total Penjualan</p>
+            <p class="text-gray-500 text-sm font-bold uppercase tracking-widest">Total Sales</p>
             <p class="text-3xl font-bold mt-2">Rp {{ number_format(\App\Models\Order::where('status', '!=', 'cancelled')->sum('total_amount'), 0, ',', '.') }}</p>
-            <div class="mt-4 text-xs text-emerald-500">Berdasarkan pesanan valid</div>
+            <div class="mt-4 text-xs text-emerald-500">Based on valid orders</div>
         </a>
         <a href="{{ route('admin.orders.index') }}" class="glass p-8 rounded-3xl hover:bg-yellow-500/5 transition group">
-            <p class="text-gray-500 text-sm font-bold uppercase tracking-widest">Pesanan Baru</p>
+            <p class="text-gray-500 text-sm font-bold uppercase tracking-widest">New Orders</p>
             <p class="text-3xl font-bold mt-2">{{ \App\Models\Order::where('status', 'pending')->count() }}</p>
-            <div class="mt-4 text-xs text-yellow-500">Perlu diproses segera</div>
+            <div class="mt-4 text-xs text-yellow-500">Requires immediate processing</div>
         </a>
         <a href="{{ route('admin.products.index') }}" class="glass p-8 rounded-3xl hover:bg-red-500/5 transition group">
-            <p class="text-gray-500 text-sm font-bold uppercase tracking-widest">Stok Rendah</p>
+            <p class="text-gray-500 text-sm font-bold uppercase tracking-widest">Low Stock</p>
             <p class="text-3xl font-bold mt-2 {{ \App\Models\Product::where('stock', '<', 5)->count() > 0 ? 'text-red-500' : '' }}">
                 {{ \App\Models\Product::where('stock', '<', 5)->count() }}
             </p>
-            <div class="mt-4 text-xs text-gray-400">Produk di bawah 5 ekor</div>
+            <div class="mt-4 text-xs text-gray-400">Products with less than 5 units</div>
         </a>
     </div>
 
@@ -39,8 +39,8 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                 </svg>
             </div>
-            <h3 class="font-bold text-lg mb-2">Tambah Produk</h3>
-            <p class="text-sm text-gray-500">Unggah koleksi Channa atau perlengkapan baru</p>
+            <h3 class="font-bold text-lg mb-2">Add Product</h3>
+            <p class="text-sm text-gray-500">Upload new Channa collection or equipment</p>
         </a>
 
         <a href="{{ route('admin.products.index') }}" class="glass p-8 rounded-3xl hover:bg-emerald-500/10 transition group text-center border-emerald-500/20">
@@ -49,24 +49,24 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
                 </svg>
             </div>
-            <h3 class="font-bold text-lg mb-2">Lihat Inventory</h3>
-            <p class="text-sm text-gray-500">Pantau stok dan update harga produk</p>
+            <h3 class="font-bold text-lg mb-2">View Inventory</h3>
+            <p class="text-sm text-gray-500">Monitor stock and update product prices</p>
         </a>
     </div>
 
     <div class="glass rounded-[2rem] overflow-hidden">
         <div class="p-8 border-b border-white/10 flex justify-between items-center">
-            <h3 class="font-bold text-xl">Pesanan Terbaru</h3>
-            <a href="{{ route('admin.orders.index') }}" class="text-sm text-emerald-500 hover:underline">Lihat Semua →</a>
+            <h3 class="font-bold text-xl">Recent Orders</h3>
+            <a href="{{ route('admin.orders.index') }}" class="text-sm text-emerald-500 hover:underline">View All →</a>
         </div>
         <table class="w-full text-left">
             <thead class="bg-white/5 text-xs uppercase text-gray-500">
                 <tr>
-                    <th class="px-8 py-4">Nomor Pesanan</th>
-                    <th class="px-8 py-4">Pembeli</th>
+                    <th class="px-8 py-4">Order Number</th>
+                    <th class="px-8 py-4">Customer</th>
                     <th class="px-8 py-4">Total</th>
                     <th class="px-8 py-4">Status</th>
-                    <th class="px-8 py-4 text-right">Aksi</th>
+                    <th class="px-8 py-4 text-right">Action</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-white/5">
@@ -100,7 +100,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="5" class="px-8 py-10 text-center text-gray-500 italic">Belum ada pesanan terbaru.</td>
+                    <td colspan="5" class="px-8 py-10 text-center text-gray-500 italic">No recent orders yet.</td>
                 </tr>
                 @endforelse
             </tbody>

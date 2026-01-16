@@ -87,7 +87,7 @@ class AuthController extends Controller
             
             if($finduser){
                 Auth::login($finduser);
-                return redirect()->intended('/');
+                return redirect()->intended('/')->with('success', 'Login Berhasil!');
             }else{
                 $newUser = User::updateOrCreate(['email' => $user->email],[
                     'name' => $user->name,
@@ -97,7 +97,7 @@ class AuthController extends Controller
                 ]);
                 
                 Auth::login($newUser);
-                return redirect()->intended('/');
+                return redirect()->intended('/')->with('success', 'Login Berhasil!');
             }
         } catch (\Exception $e) {
             return redirect('login')->with('error', 'Something went wrong while logging in with Google');

@@ -13,6 +13,10 @@
             --primary-glow: rgba(16, 185, 129, 0.4);
             --bg: #050505;
         }
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 100px;
+        }
         body { 
             font-family: 'Inter', sans-serif; 
             background-color: var(--bg); 
@@ -36,18 +40,18 @@
 </head>
 <body class="antialiased">
     <!-- Navigation -->
-    <nav id="mainNav" class="fixed w-full z-50 px-6 py-6 items-center flex justify-center transition-transform duration-500 ease-in-out">
-        <div class="max-w-7xl w-full glass rounded-full px-8 py-4 flex justify-between items-center border-white/10">
+    <nav id="mainNav" class="fixed w-full z-50 px-6 py-3 items-center flex justify-center transition-transform duration-500 ease-in-out">
+        <div class="max-w-7xl w-full relative glass rounded-full px-6 py-2 flex justify-between items-center border-white/10">
             <div class="flex items-center space-x-3">
                 <a href="{{ route('home') }}" class="flex items-center space-x-3">
-                    <img src="{{ asset('images/logo.png') }}" class="h-10 w-10 object-contain" alt="Logo">
-                    <span class="text-xl font-bold tracking-tighter uppercase font-syne italic">Snakehead <span class="text-emerald-500">Culture</span></span>
+                    <img src="{{ asset('images/logo.png') }}" class="h-8 w-8 object-contain" alt="Logo">
+                    <span class="text-lg font-bold tracking-tighter uppercase font-syne italic">Snakehead <span class="text-emerald-500">Culture</span></span>
                 </a>
             </div>
             <div class="hidden md:flex space-x-10 text-sm font-medium tracking-widest uppercase items-center">
                 @include('partials.mega_menu')
                 <a href="{{ route('home') }}" class="hover:text-emerald-400 transition-colors">Home</a>
-                <a href="{{ route('store.info') }}" class="hover:text-emerald-400 transition-colors">Informasi</a>
+                <a href="{{ route('store.info') }}" class="hover:text-emerald-400 transition-colors">Information</a>
             </div>
             <div class="flex items-center space-x-3 md:space-x-6">
                 <!-- Cart -->
@@ -118,9 +122,9 @@
             <a href="{{ route('home') }}" class="hover:text-emerald-400 transition-colors">Home</a>
             <a href="{{ route('species') }}" class="hover:text-emerald-400 transition-colors">Species</a>
             <a href="{{ route('gallery') }}" class="hover:text-emerald-400 transition-colors">Gallery</a>
-            <a href="{{ route('store.info') }}" class="hover:text-emerald-400 transition-colors">Informasi</a>
+            <a href="{{ route('store.info') }}" class="hover:text-emerald-400 transition-colors">Information</a>
             @auth
-                <a href="{{ route('profile.orders') }}" class="hover:text-emerald-400 transition-colors">Pesanan Saya</a>
+                <a href="{{ route('profile.orders') }}" class="hover:text-emerald-400 transition-colors">My Orders</a>
                 <form action="{{ route('logout') }}" method="POST" class="inline">
                     @csrf
                     <button type="submit" class="text-red-500 hover:text-red-400 transition-colors uppercase font-bold">Logout</button>
@@ -128,6 +132,34 @@
             @endauth
         </div>
     </nav>
+
+    @if(session('success'))
+    <div id="toast-success" class="fixed top-32 right-5 z-[100] flex items-center w-full max-w-xs p-4 mb-4 text-white bg-[#050505]/95 backdrop-blur-xl border border-emerald-500/30 rounded-2xl shadow-[0_0_30px_rgba(16,185,129,0.2)] animate-float" role="alert">
+        <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-emerald-500 bg-emerald-500/20 rounded-lg">
+            <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
+            </svg>
+            <span class="sr-only">Check icon</span>
+        </div>
+        <div class="ml-3 text-sm font-bold font-syne uppercase tracking-wider">{{ session('success') }}</div>
+        <button type="button" class="ml-auto -mx-1.5 -my-1.5 text-gray-400 hover:text-white rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-white/10 inline-flex h-8 w-8 items-center justify-center transition-colors" data-dismiss-target="#toast-success" aria-label="Close" onclick="this.parentElement.remove()">
+            <span class="sr-only">Close</span>
+            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+            </svg>
+        </button>
+    </div>
+    <script>
+        setTimeout(() => {
+            const toast = document.getElementById('toast-success');
+            if(toast) {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.5s ease';
+                setTimeout(() => toast.remove(), 500);
+            }
+        }, 4000);
+    </script>
+    @endif
 
     <main class="pt-32">
         @yield('content')

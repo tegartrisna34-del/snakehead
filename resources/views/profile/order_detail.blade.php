@@ -122,7 +122,7 @@
             @if($order->status == 'pending')
             <div class="glass p-8 rounded-[2rem] border border-yellow-500/20 bg-yellow-500/5">
                 <p class="text-xs text-yellow-500 font-bold mb-4 uppercase tracking-wider">Menunggu Pembayaran</p>
-                <a href="https://wa.me/6282136048824?text=Halo SC, saya ingin konfirmasi pembayaran untuk pesanan #{{ $order->order_number }}" 
+                <a href="https://wa.me/6288271887763?text=Halo SC, saya ingin konfirmasi pembayaran untuk pesanan #{{ $order->order_number }}" 
                    target="_blank"
                    class="block w-full py-4 bg-emerald-500 text-black text-center rounded-2xl font-bold uppercase text-xs tracking-widest hover:bg-emerald-400 transition-all shadow-lg shadow-emerald-500/10">
                     Konfirmasi via WA

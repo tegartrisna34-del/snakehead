@@ -46,6 +46,12 @@
                         @elseif($order->bank == 'BRI')
                             <p class="text-white text-lg font-mono">BRI: 0000-01-000000-50-0</p>
                             <p class="text-sm text-gray-400">a.n Snakehead Culture</p>
+                        @elseif($order->bank == 'BNI')
+                            <p class="text-white text-lg font-mono">BNI: 098-765-4321</p>
+                            <p class="text-sm text-gray-400">a.n Snakehead Culture</p>
+                        @elseif($order->bank == 'BSI')
+                            <p class="text-white text-lg font-mono">BSI: 7777-8888-99</p>
+                            <p class="text-sm text-gray-400">a.n Snakehead Culture</p>
                         @elseif($order->bank == 'Mandiri')
                             <p class="text-white text-lg font-mono">Mandiri: 123-00-0000000-0</p>
                             <p class="text-sm text-gray-400">a.n Snakehead Culture</p>
@@ -55,7 +61,36 @@
                         @endif
                         <p class="mt-4 text-xs text-gray-500">*Mohon konfirmasi bukti transfer via WhatsApp ke Admin</p>
                     </div>
-                @else
+                @elseif($order->payment_method == 'qris')
+                    <div class="bg-indigo-500/10 border border-indigo-500/30 rounded-xl p-4">
+                        <h3 class="text-indigo-400 font-bold mb-3 flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M4 8h.01M4 16h.01M4 20h4M4 4h4v4H4V4zm12 0h4v4h-4V4zM4 16h4v4H4v-4z"/></svg>
+                            QRIS (Scan Barcode)
+                        </h3>
+                        <div class="bg-white p-3 rounded-2xl inline-block mb-4 shadow-xl">
+                            @php
+                                $qrData = "Snakehead Culture - Order: " . $order->order_number . " - Total: Rp " . number_format($order->total_amount, 0, ',', '.');
+                                $qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=10&data=" . urlencode($qrData);
+                            @endphp
+                            <img src="{{ $qrUrl }}" alt="QRIS for {{ $order->order_number }}" class="w-40 h-40">
+                        </div>
+                        <div class="text-left space-y-1">
+                            <p class="text-[10px] text-gray-500 uppercase font-bold tracking-wider">Metode Pembayaran:</p>
+                            <p class="text-xs text-indigo-300 font-bold">QRIS Dynamic - Instant Verification</p>
+                            <p class="text-[10px] text-gray-500 mt-2 italic">*Silakan scan di atas dan kirim bukti bayar ke Admin.</p>
+                        </div>
+                    </div>
+                @elseif($order->payment_method == 'ewallet')
+                    <div class="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4">
+                        <h3 class="text-blue-400 font-bold mb-2 flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                            E-Wallet ({{ $order->bank ?? 'DANA/OVO' }})
+                        </h3>
+                        <p class="text-white text-lg font-mono">Nomor: 0882-7188-7763</p>
+                        <p class="text-sm text-gray-400">a.n Snakehead Culture</p>
+                        <p class="mt-2 text-xs text-gray-500">*Mohon konfirmasi via WhatsApp setelah transfer</p>
+                    </div>
+                @elseif($order->payment_method == 'cod')
                     <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4">
                         <h3 class="text-yellow-500 font-bold mb-2 flex items-center gap-2">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
@@ -65,7 +100,7 @@
                     </div>
                 @endif
                 <div class="mt-6 flex justify-center">
-                    <a href="https://wa.me/6282136048824?text=Halo%20Admin,%20saya%20konfirmasi%20pesanan%20{{ $order->order_number }}" target="_blank" class="flex items-center gap-2 text-emerald-500 hover:text-emerald-400 transition font-bold text-sm">
+                    <a href="https://wa.me/6288271887763?text=Halo%20Admin,%20saya%20konfirmasi%20pesanan%20{{ $order->order_number }}" target="_blank" class="flex items-center gap-2 text-emerald-500 hover:text-emerald-400 transition font-bold text-sm">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.008-.57-.008-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.248-.57-.397m-5.472 7.618c-2.388 0-4.636-.636-6.611-1.742l-.474-.265-4.91 1.285 1.31-4.782-.303-.483c-1.272-2.026-1.944-4.385-1.944-6.812 0-7.058 5.742-12.8 12.8-12.8 3.419 0 6.636 1.332 9.055 3.75 2.419 2.418 3.75 5.636 3.75 9.055 0 7.058-5.741 12.802-12.802 12.802"/></svg>
                         Konfirmasi ke Admin
                     </a>

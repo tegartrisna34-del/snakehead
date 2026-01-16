@@ -1,40 +1,49 @@
-<div class="relative mega-container">
-    <button type="button" class="mega-toggle uppercase font-bold tracking-widest text-sm px-4 py-2 hover:text-emerald-400 transition-colors" aria-expanded="false">Shop</button>
+<div class="mega-container relative">
+    <button type="button" class="mega-toggle uppercase font-bold tracking-widest text-sm px-4 py-2 hover:text-emerald-400 transition-all flex items-center gap-2" aria-expanded="false">
+        Shop
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 opacity-50 group-hover:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+    </button>
 
-    <div class="mega-menu hidden absolute left-0 right-0 mt-3 z-50">
-        <div class="max-w-7xl mx-auto px-8 bg-black/90 glass border border-white/5 rounded-xl shadow-2xl p-8">
-            <div class="grid grid-cols-1 md:grid-cols-6 gap-8">
-                @php
-                    $menuOrder = [
-                        ['slug' => 'chana', 'label' => 'Chana'],
-                        ['slug' => 'aquarium', 'label' => 'Aquarium & Aksesoris'],
-                        ['slug' => 'pakan', 'label' => 'Pakan'],
-                        ['slug' => 'obat', 'label' => 'Obat'],
+    <div class="mega-menu hidden absolute left-0 mt-3 w-64 z-50">
+        <div class="bg-[#0a0a0a]/95 glass border border-white/10 rounded-2xl shadow-2xl overflow-visible py-3 relative">
+            @php
+                // Fetch and simplify names
+                $allProducts = \App\Models\Product::where('is_active', true)->where('stock', '>', 0)->get();
+                $simplified = $allProducts->map(function($p) {
+                    $baseName = preg_replace('/ (Grade [A-B\+]+\.?|Bahan).*$/i', '', $p->name);
+                    return (object)[
+                        'name' => trim($baseName), 
+                        'slug' => $p->category->slug ?? Str::slug($baseName)
                     ];
-                @endphp
-                @foreach($menuOrder as $item)
-                    @php $cat = $categories->firstWhere('slug', $item['slug']); @endphp
-                    <div class="md:col-span-1">
-                        <a href="{{ route('category.show', $cat? $cat->slug : $item['slug']) }}" class="text-emerald-400 font-bold uppercase text-sm mb-4 inline-block">{{ $item['label'] }}</a>
-                        <div class="mt-3">
-                            <a href="{{ route('category.show', $cat? $cat->slug : $item['slug']) }}" class="text-emerald-400 text-xs font-bold uppercase">Lihat semua</a>
-                        </div>
-                    </div>
-                @endforeach
+                })->unique('name')->sortBy('name');
 
-                <div class="md:col-span-2 hidden lg:block">
-                    <h4 class="text-emerald-400 font-bold uppercase text-sm mb-4">Highlights</h4>
-                    <div class="grid grid-cols-1 gap-4">
-                        @php
-                            $featured = \App\Models\Product::where('is_active', true)->inRandomOrder()->take(4)->get();
-                        @endphp
-                        @foreach($featured as $f)
-                            <a href="{{ route('product.show', $f->slug ?? $f->id) }}" class="flex items-center gap-4 bg-white/3 p-3 rounded">
-                                <img src="{{ $f->image ? asset($f->image) : 'https://via.placeholder.com/56' }}" class="w-14 h-14 object-cover rounded" alt="{{ $f->name }}">
-                                <div>
-                                    <div class="font-bold">{{ $f->name }}</div>
-                                    <div class="text-xs text-gray-300">Rp {{ number_format($f->price,0,',','.') }}</div>
-                                </div>
+                // Split as requested
+                $mainSpecies = $simplified->filter(fn($p) => str_contains(strtolower($p->name), 'channa'))->take(4);
+                $otherProducts = $simplified->reject(fn($p) => $mainSpecies->contains($p));
+            @endphp
+
+            {{-- Main List (Channa Only) --}}
+            @foreach($mainSpecies as $sp)
+                <a href="{{ route('home') }}#{{ $sp->slug }}" class="block px-6 py-3.5 text-gray-400 hover:text-emerald-400 hover:bg-emerald-500/5 transition-all text-[11px] font-bold uppercase tracking-wider border-l-2 border-transparent hover:border-emerald-500/50">
+                    {{ $sp->name }}
+                </a>
+            @endforeach
+
+            {{-- See All Products with Flyout --}}
+            <div class="border-t border-white/5 mt-2 pt-2 group/submenu relative">
+                <div class="px-6 py-4 text-emerald-500 group-hover/submenu:bg-emerald-500/5 transition-all text-[10px] font-black uppercase tracking-[0.2em] flex items-center justify-between cursor-pointer">
+                    <span>See all products</span>
+                    <svg class="w-3 h-3 group-hover/submenu:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"/></svg>
+                </div>
+
+                {{-- Flyout Side Menu --}}
+                <div class="invisible group-hover/submenu:visible opacity-0 group-hover/submenu:opacity-100 absolute left-full top-[-10px] ml-1 w-64 transition-all duration-300 transform translate-x-2 group-hover/submenu:translate-x-0">
+                    <div class="bg-[#0a0a0a]/95 glass border border-white/10 rounded-2xl shadow-2xl overflow-hidden py-3">
+                        @foreach($otherProducts as $op)
+                            <a href="{{ route('home') }}#{{ $op->slug }}" class="block px-6 py-3 text-gray-400 hover:text-emerald-400 hover:bg-emerald-500/5 transition-all text-[11px] font-bold uppercase tracking-wider border-l-2 border-transparent hover:border-emerald-500/50">
+                                {{ $op->name }}
                             </a>
                         @endforeach
                     </div>
@@ -48,29 +57,33 @@
             document.querySelectorAll('.mega-container').forEach(function (container) {
                 var btn = container.querySelector('.mega-toggle');
                 var menu = container.querySelector('.mega-menu');
+                var timeout;
 
                 if (!btn || !menu) return;
 
-                btn.addEventListener('click', function (e) {
-                    e.stopPropagation();
-                    var open = !menu.classList.contains('hidden');
-                    // close all other mega menus
+                function showMenu() {
+                    clearTimeout(timeout);
                     document.querySelectorAll('.mega-menu').forEach(function(m){ m.classList.add('hidden'); });
-                    if (open) {
-                        menu.classList.add('hidden');
-                        btn.setAttribute('aria-expanded','false');
-                    } else {
-                        menu.classList.remove('hidden');
-                        btn.setAttribute('aria-expanded','true');
-                    }
-                });
+                    menu.classList.remove('hidden');
+                    btn.setAttribute('aria-expanded','true');
+                }
 
-                // close when clicking outside
-                document.addEventListener('click', function (ev) {
-                    if (!container.contains(ev.target)) {
+                function hideMenu() {
+                    timeout = setTimeout(function() {
                         menu.classList.add('hidden');
                         btn.setAttribute('aria-expanded','false');
-                    }
+                    }, 100); // Small delay to prevent accidental closing
+                }
+
+                container.addEventListener('mouseenter', showMenu);
+                container.addEventListener('mouseleave', hideMenu);
+
+                // Auto-close on link click
+                menu.querySelectorAll('a').forEach(function(link) {
+                    link.addEventListener('click', function() {
+                        menu.classList.add('hidden');
+                        btn.setAttribute('aria-expanded','false');
+                    });
                 });
             });
         });

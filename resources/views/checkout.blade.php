@@ -21,6 +21,22 @@
     <div class="max-w-4xl mx-auto">
         <a href="{{ route('home') }}" class="text-emerald-500 hover:underline mb-8 inline-block">← Kembali Belanja</a>
         <h1 class="text-4xl font-bold mb-10">Checkout</h1>
+        
+        @if(session('error'))
+            <div class="bg-red-500/20 border border-red-500 text-red-500 p-4 rounded-xl mb-6">
+                {{ session('error') }}
+            </div>
+        @endif
+
+        @if($errors->any())
+            <div class="bg-red-500/20 border border-red-500 text-red-500 p-4 rounded-xl mb-6">
+                <ul class="list-disc list-inside">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
             <!-- Order Summary -->
@@ -42,11 +58,26 @@
                     </div>
                     @endforeach
                 </div>
-                <div class="border-t border-white/10 mt-6 pt-6 flex justify-between items-center">
-                    <span class="text-lg">Total</span>
-                    <span class="text-2xl font-bold text-emerald-500">
-                        Rp {{ number_format(array_reduce($cart, function($carry, $item) { return $carry + ($item['price'] * $item['quantity']); }, 0), 0, ',', '.') }}
-                    </span>
+                <div class="border-t border-white/10 mt-6 pt-6 space-y-2">
+                    <div class="flex justify-between items-center text-sm">
+                        <span>Ongkir</span>
+                        <span id="summary-shipping-cost" class="font-bold text-emerald-400">Rp 0</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-lg">Total</span>
+                        <span class="text-2xl font-bold text-emerald-500" id="summary-total">
+                            Rp {{ number_format(array_reduce($cart, function($carry, $item) { return $carry + ($item['price'] * $item['quantity']); }, 0), 0, ',', '.') }}
+                        </span>
+                    </div>
+                </div>
+                <!-- Weight Calculation -->
+                @php
+                    $totalQty = array_sum(array_column($cart, 'quantity'));
+                    $totalWeight = ceil($totalQty / 3);
+                @endphp
+                <div class="mt-1 text-right">
+                    <p class="text-[9px] text-gray-500 font-mono">Total Berat: {{ $totalWeight }} Kg</p>
+                    <p class="text-[9px] text-gray-600 italic">(1 Kg per 3 item)</p>
                 </div>
             </div>
 
@@ -89,6 +120,10 @@
                             <option value="jne">JNE</option>
                             <option value="jnt">J&T</option>
                             <option value="sicepat">SiCepat</option>
+                            <option value="tiki">TIKI</option>
+                            <option value="pos">Pos Indonesia</option>
+                            <option value="ninja">Ninja Xpress</option>
+                            <option value="anteraja">Anteraja</option>
                         </select>
                     </div>
                     <div class="flex items-center justify-between">
@@ -97,7 +132,7 @@
                         </div>
                         <div class="text-right">
                             <div class="text-xs text-gray-400">Ongkir:</div>
-                            <div id="shipping-display" class="text-emerald-400 font-bold">Rp 0</div>
+                            <div id="shipping-display" class="text-xs text-emerald-400 font-bold">Rp 0</div>
                         </div>
                     </div>
 
@@ -111,8 +146,26 @@
                         <div class="ml-6 mb-2">
                             <select name="bank" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-emerald-500 outline-none text-gray-900">
                                 <option value="BCA">BCA</option>
+                                <option value="BNI">BNI</option>
                                 <option value="BRI">BRI</option>
                                 <option value="Mandiri">Mandiri</option>
+                                <option value="BSI">BSI (Syariah)</option>
+                            </select>
+                        </div>
+
+                        <label class="flex items-center space-x-3 text-white">
+                            <input type="radio" name="payment_method" value="qris">
+                            <span>QRIS (Scan Barcode)</span>
+                        </label>
+
+                        <label class="flex items-center space-x-3 text-white">
+                            <input type="radio" name="payment_method" value="ewallet">
+                            <span>E-Wallet (DANA / OVO)</span>
+                        </label>
+                        <div id="ewallet-options" class="ml-6 mb-2 hidden">
+                            <select name="ewallet_type" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-emerald-500 outline-none text-gray-900">
+                                <option value="DANA">DANA</option>
+                                <option value="OVO">OVO</option>
                             </select>
                         </div>
 
@@ -129,6 +182,18 @@
     </div>
 
     <script>
+        // Toggle E-Wallet options
+        document.querySelectorAll('input[name="payment_method"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const ewalletOptions = document.getElementById('ewallet-options');
+                if (this.value === 'ewallet') {
+                    ewalletOptions.classList.remove('hidden');
+                } else {
+                    ewalletOptions.classList.add('hidden');
+                }
+            });
+        });
+
         // Load provinces from server proxy to avoid CORS issues
         (function loadProvinces(){
             const provinceSelect = document.getElementById('province');
@@ -139,7 +204,7 @@
                 })
                 .then(data => {
                     console.log('Provinces loaded:', data.length);
-                    provinceSelect.innerHTML = '<option value="">Pilih Provinsi</option>' + data.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+                    provinceSelect.innerHTML = '<option value="">Pilih Provinsi</option>' + data.map(p => `<option value="${p.id}" data-name="${p.name}">${p.name}</option>`).join('');
                 }).catch(err => { console.error('Failed to load provinces:', err); provinceSelect.innerHTML = '<option value="">Gagal memuat provinsi - coba muat ulang</option>'; });
         })();
 
@@ -162,20 +227,52 @@
         document.getElementById('check-shipping').addEventListener('click', function () {
             const city = document.getElementById('city_select').value || '';
             const courier = document.getElementById('courier').value;
-            if (!city) { alert('Masukkan kota tujuan dahulu.'); return; }
+            
+            // Get Province Name
+            const provinceSelect = document.getElementById('province');
+            const provinceName = provinceSelect.options[provinceSelect.selectedIndex].getAttribute('data-name');
+
+            if (!city || !provinceName) { alert('Pilih provinsi dan kota tujuan dahulu.'); return; }
+
+            const quantity = {{ array_sum(array_column($cart, 'quantity')) }};
+            
+            // Show loading state
+            this.innerText = 'Mengecek...';
+            this.disabled = true;
 
             fetch('{{ route('shipping.cost') }}', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-                body: JSON.stringify({ courier: courier, destination_city: city })
+                body: JSON.stringify({ 
+                    courier: courier, 
+                    destination_city: city, 
+                    province_name: provinceName,
+                    quantity: quantity 
+                })
             }).then(r => r.json()).then(data => {
                 if (data.success) {
+                    // Update Shipping Cost Display locally
                     document.getElementById('shipping-display').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(data.cost);
                     document.getElementById('shipping_cost').value = data.cost;
+                    
+                    // Update Summary
+                    document.getElementById('summary-shipping-cost').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(data.cost);
+                    
+                    // Update Total
+                    const subtotal = {{ array_reduce($cart, function($carry, $item) { return $carry + ($item['price'] * $item['quantity']); }, 0) }};
+                    const total = subtotal + data.cost;
+                    document.getElementById('summary-total').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(total);
+
                 } else {
                     alert('Gagal mendapat ongkir.');
                 }
-            }).catch(err => { alert('Error saat cek ongkir'); console.error(err); });
+            }).catch(err => { 
+                alert('Error saat cek ongkir'); 
+                console.error(err); 
+            }).finally(() => {
+                this.innerText = 'Cek Ongkir';
+                this.disabled = false;
+            });
         });
     </script>
 </body>

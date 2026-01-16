@@ -20,49 +20,73 @@ class CheckoutController extends Controller
 
     public function process(Request $request)
     {
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|email',
-            'phone' => 'required',
-            'address' => 'required',
-            'payment_method' => 'required|in:transfer,cod',
-            'bank' => 'nullable|string',
-            'shipping_cost' => 'nullable|numeric'
-        ]);
+        try {
+            \Illuminate\Support\Facades\Log::info('Checkout Processing Started', $request->all());
 
-        $cart = session()->get('cart', []);
-        $total = 0;
-        foreach ($cart as $id => $details) {
-            $total += $details['price'] * $details['quantity'];
-        }
-
-        $shippingCost = $request->input('shipping_cost', 0);
-        $total += $shippingCost;
-
-        $order = Order::create([
-            'order_number' => 'ORD-' . strtoupper(Str::random(10)),
-            'user_id' => auth()->id(),
-            'total_amount' => $total,
-            'status' => 'pending',
-            'payment_status' => 'unpaid',
-            'shipping_address' => $request->address,
-            'shipping_cost' => $shippingCost,
-            'payment_method' => $request->payment_method,
-            'bank' => $request->bank,
-        ]);
-
-        foreach ($cart as $id => $details) {
-            OrderItem::create([
-                'order_id' => $order->id,
-                'product_id' => $id,
-                'quantity' => $details['quantity'],
-                'price' => $details['price'],
+            $request->validate([
+                'name' => 'required',
+                'email' => 'required|email',
+                'phone' => 'required',
+                'address' => 'required',
+                'payment_method' => 'required|in:transfer,cod,qris,ewallet',
+                'bank' => 'nullable|string',
+                'shipping_cost' => 'nullable|numeric'
             ]);
+
+            $cart = session()->get('cart', []);
+            \Illuminate\Support\Facades\Log::info('Cart Contents', $cart);
+            
+            if (empty($cart)) {
+                \Illuminate\Support\Facades\Log::warning('Cart is empty during process');
+                return redirect()->route('home')->with('error', 'Keranjang belanja kosong!');
+            }
+
+            $total = 0;
+            foreach ($cart as $id => $details) {
+                $total += $details['price'] * $details['quantity'];
+            }
+
+            $shippingCost = $request->input('shipping_cost', 0);
+            $total += $shippingCost;
+
+            \Illuminate\Support\Facades\Log::info('Creating Order', ['user_id' => auth()->id(), 'total' => $total, 'shipping' => $shippingCost]);
+
+            $order = Order::create([
+                'order_number' => 'ORD-' . strtoupper(Str::random(10)),
+                'user_id' => auth()->id(),
+                'total_amount' => $total,
+                'status' => 'pending',
+                'payment_status' => 'unpaid',
+                'shipping_address' => $request->address . ', ' . $request->city, // Append City
+                'shipping_cost' => $shippingCost,
+                'payment_method' => $request->payment_method,
+                'bank' => $request->bank,
+            ]);
+
+            \Illuminate\Support\Facades\Log::info('Order Created', ['order_id' => $order->id]);
+
+            foreach ($cart as $id => $details) {
+                OrderItem::create([
+                    'order_id' => $order->id,
+                    'product_id' => $id,
+                    'quantity' => $details['quantity'],
+                    'price' => $details['price'],
+                ]);
+            }
+
+            session()->forget('cart');
+            
+            \Illuminate\Support\Facades\Log::info('Redirecting to Success');
+            return redirect()->route('checkout.success', $order->order_number);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            \Illuminate\Support\Facades\Log::error('Validation Error', $e->errors());
+            return redirect()->back()->withErrors($e->errors())->withInput();
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Checkout Error: ' . $e->getMessage());
+            \Illuminate\Support\Facades\Log::error($e->getTraceAsString());
+            return redirect()->back()->with('error', 'Terjadi kesalahan sistem: ' . $e->getMessage());
         }
-
-        session()->forget('cart');
-
-        return redirect()->route('checkout.success', $order->order_number);
     }
 
     public function success($orderNumber)
@@ -82,40 +106,42 @@ class CheckoutController extends Controller
         $request->validate([
             'courier' => 'required|string',
             'destination_city' => 'required|string',
+            'province_name' => 'nullable|string',
         ]);
 
-        // Mock Logic for Demo
-        $baseRates = [
-            'jne' => 15000,
-            'jnt' => 14000,
-            'sicepat' => 13000,
-            'pos' => 12000,
-        ];
+        $quantity = $request->input('quantity', 1);
+        $weight = ceil($quantity / 3); // 1kg per 3 items
 
-        $courier = strtolower($request->courier);
-        $base = $baseRates[$courier] ?? 15000;
-        
-        $city = strtolower($request->destination_city);
-        $multiplier = 1.0;
+        $provinceName = strtoupper($request->input('province_name', ''));
 
-        // Simple distance simulation based on city name
-        if (str_contains($city, 'jakarta') || str_contains($city, 'bogor') || str_contains($city, 'depok') || str_contains($city, 'tangerang') || str_contains($city, 'bekasi')) {
-            $multiplier = 1.0; // Jabodetabek
-        } elseif (str_contains($city, 'bandung') || str_contains($city, 'semarang') || str_contains($city, 'yogyakarta') || str_contains($city, 'surabaya')) {
-            $multiplier = 1.2; // Java Main Cities
-        } elseif (str_contains($city, 'medan') || str_contains($city, 'palembang') || str_contains($city, 'makassar') || str_contains($city, 'denpasar')) {
-            $multiplier = 1.8; // Outer Islands
+        // Custom Logic requested by user:
+        // 1. Jawa Tengah -> 10,000
+        // 2. Other Java (Jakarta, Banten, Yogyakarta, Jawa Timur, Jawa Barat) -> 15,000
+        // 3. Outside Java -> 25,000
+
+        if (str_contains($provinceName, 'JAWA TENGAH')) {
+            $ratePerKg = 10000;
+        } elseif (
+            str_contains($provinceName, 'JAWA') || 
+            str_contains($provinceName, 'BANTEN') || 
+            str_contains($provinceName, 'JAKARTA') || 
+            str_contains($provinceName, 'YOGYAKARTA')
+        ) {
+            $ratePerKg = 15000;
         } else {
-            $multiplier = 1.5; // Others
+            // Outside Java
+            $ratePerKg = 25000;
         }
 
-        $cost = (int) round($base * $multiplier);
+        $cost = ($ratePerKg * $weight);
 
         return response()->json([
             'success' => true,
-            'courier' => strtoupper($courier),
+            'courier' => strtoupper($request->courier),
             'destination' => $request->destination_city,
             'cost' => $cost,
+            'province' => $provinceName,
+            'rate_per_kg' => $ratePerKg,
             'service' => 'REG (Regular)',
             'etd' => '2-3 Days',
             'currency' => 'IDR'

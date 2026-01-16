@@ -1,12 +1,12 @@
 @extends('layouts.admin')
 
-@section('title', 'Daftar Produk')
+@section('title', 'Product List')
 
 @section('content')
     <header class="flex justify-between items-center mb-10">
-        <h2 class="text-3xl font-bold">Manajemen Produk</h2>
+        <h2 class="text-3xl font-bold">Product Management</h2>
         <a href="{{ route('admin.products.create') }}" class="px-6 py-3 snake-gradient rounded-xl font-bold hover:opacity-90 transition">
-            + Tambah Produk
+            + Add Product
         </a>
     </header>
 
@@ -14,11 +14,11 @@
         <table class="w-full text-left">
             <thead class="bg-white/5 text-xs uppercase text-gray-500">
                 <tr>
-                    <th class="px-8 py-4">Produk</th>
-                    <th class="px-8 py-4">Kategori</th>
-                    <th class="px-8 py-4">Harga</th>
-                    <th class="px-8 py-4">Stok</th>
-                    <th class="px-8 py-4">Aksi</th>
+                    <th class="px-8 py-4">Product</th>
+                    <th class="px-8 py-4">Category</th>
+                    <th class="px-8 py-4">Price</th>
+                    <th class="px-8 py-4">Stock</th>
+                    <th class="px-8 py-4">Action</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-white/5">
@@ -32,7 +32,7 @@
                             <span class="font-medium">{{ $product->name }}</span>
                         </div>
                     </td>
-                    <td class="px-8 py-4 text-gray-400">{{ $product->category->name ?? 'Tanpa Kategori' }}</td>
+                    <td class="px-8 py-4 text-gray-400">{{ $product->category->name ?? 'Uncategorized' }}</td>
                     <td class="px-8 py-4 font-bold text-emerald-400">Rp {{ number_format($product->price, 0, ',', '.') }}</td>
                     <td class="px-8 py-4">
                         <span class="px-3 py-1 rounded-full text-xs font-bold {{ $product->stock > 5 ? 'bg-emerald-500/10 text-emerald-500' : 'bg-red-500/10 text-red-500' }}">

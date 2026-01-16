@@ -14,7 +14,7 @@
             <div class="glass p-6 rounded-xl">
                 <h3 class="font-bold mb-2">WhatsApp</h3>
                 <p class="text-gray-400">Klik tombol di bawah untuk langsung menghubungi kami via WhatsApp.</p>
-                <a href="https://wa.me/6282136048824?text=Halo%20Snakehead%20Culture%20saya%20mau%20bertanya" target="_blank" class="inline-block mt-4 snake-gradient px-4 py-3 rounded-xl">Chat via WhatsApp</a>
+                <a href="https://wa.me/6288271887763?text=Halo%20Snakehead%20Culture%20saya%20mau%20bertanya" target="_blank" class="inline-block mt-4 snake-gradient px-4 py-3 rounded-xl">Chat via WhatsApp</a>
             </div>
             <div class="glass p-6 rounded-xl">
                 <h3 class="font-bold mb-2">Alamat</h3>

@@ -1,22 +1,22 @@
 @extends('layouts.admin')
 
-@section('title', 'Manajemen Pesanan')
+@section('title', 'Order Management')
 
 @section('content')
     <header class="flex justify-between items-center mb-10">
-        <h2 class="text-3xl font-bold">Daftar Pesanan</h2>
+        <h2 class="text-3xl font-bold">Order List</h2>
     </header>
 
     <div class="glass rounded-[2rem] overflow-hidden">
         <table class="w-full text-left">
             <thead class="bg-white/5 text-xs uppercase text-gray-500">
                 <tr>
-                    <th class="px-8 py-4">ID Pesanan</th>
-                    <th class="px-8 py-4">Pembeli</th>
+                    <th class="px-8 py-4">Order ID</th>
+                    <th class="px-8 py-4">Customer</th>
                     <th class="px-8 py-4">Total</th>
-                    <th class="px-8 py-4">Tanggal</th>
+                    <th class="px-8 py-4">Date</th>
                     <th class="px-8 py-4">Status</th>
-                    <th class="px-8 py-4">Aksi</th>
+                    <th class="px-8 py-4">Action</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-white/5">
@@ -45,13 +45,13 @@
                     </td>
                     <td class="px-8 py-4">
                         <a href="{{ route('admin.orders.show', $order) }}" class="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-xs transition">
-                            Detail
+                            Details
                         </a>
                     </td>
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="6" class="px-8 py-10 text-center text-gray-500 italic">Belum ada pesanan masuk.</td>
+                    <td colspan="6" class="px-8 py-10 text-center text-gray-500 italic">No incoming orders yet.</td>
                 </tr>
                 @endforelse
             </tbody>

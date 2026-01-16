@@ -19,9 +19,9 @@
         <h1 class="text-xl font-bold snake-gradient bg-clip-text text-transparent mb-10 italic">SC ADMIN</h1>
         <nav class="space-y-4">
             <a href="{{ route('admin.dashboard') }}" class="sidebar-link block px-4 py-3 rounded-xl hover:bg-white/5 transition {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">Dashboard</a>
-            <a href="{{ route('admin.products.index') }}" class="sidebar-link block px-4 py-3 rounded-xl hover:bg-white/5 transition {{ request()->routeIs('admin.products.*') ? 'active' : '' }}">Produk</a>
-            <a href="{{ route('admin.orders.index') }}" class="sidebar-link block px-4 py-3 rounded-xl hover:bg-white/5 transition {{ request()->routeIs('admin.orders.*') ? 'active' : '' }}">Pesanan</a>
-            <a href="{{ route('admin.categories.index') }}" class="sidebar-link block px-4 py-3 rounded-xl hover:bg-white/5 transition {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">Kategori</a>
+            <a href="{{ route('admin.products.index') }}" class="sidebar-link block px-4 py-3 rounded-xl hover:bg-white/5 transition {{ request()->routeIs('admin.products.*') ? 'active' : '' }}">Products</a>
+            <a href="{{ route('admin.orders.index') }}" class="sidebar-link block px-4 py-3 rounded-xl hover:bg-white/5 transition {{ request()->routeIs('admin.orders.*') ? 'active' : '' }}">Orders</a>
+            <a href="{{ route('admin.categories.index') }}" class="sidebar-link block px-4 py-3 rounded-xl hover:bg-white/5 transition {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">Categories</a>
             <div class="pt-10 border-t border-white/10">
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf

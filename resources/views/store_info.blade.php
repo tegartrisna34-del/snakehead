@@ -51,9 +51,9 @@
                     <!-- WhatsApp -->
                     <div>
                         <h3 class="text-lg font-bold text-emerald-400 mb-2">WhatsApp</h3>
-                        <a href="https://wa.me/6282136048824" target="_blank" class="text-emerald-500 hover:text-emerald-400 font-bold flex items-center space-x-2">
+                        <a href="https://wa.me/6288271887763" target="_blank" class="text-emerald-500 hover:text-emerald-400 font-bold flex items-center space-x-2">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M20.52 3.48A11.9 11.9 0 0012 .1 11.88 11.88 0 001.28 9.86c0 2.11.55 4.16 1.6 5.99L0 24l8.41-2.2a11.88 11.88 0 004.59.95h.01c6.55 0 11.98-5.36 11.98-11.98 0-3.2-1.25-6.2-3.87-8.29zM12 21.5c-1.28 0-2.53-.34-3.61-.98l-.26-.15-5.01 1.31 1.32-4.9-.17-.29A9.18 9.18 0 012.8 9.88c0-5.01 4.07-9.08 9.08-9.08 2.42 0 4.69.94 6.4 2.66 1.7 1.7 2.64 3.98 2.64 6.42 0 5.01-4.07 9.08-9.08 9.08z"/></svg>
-                                <span>+62 821-3604-8824</span>
+                                <span>+62 882-7188-7763</span>
                         </a>
                     </div>
 

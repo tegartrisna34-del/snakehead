@@ -42,13 +42,13 @@
     </nav>
 
     <!-- Gallery Section -->
-    <section class="min-h-screen pt-32 pb-20">
+    <section class="min-h-screen pt-24 pb-12">
         <div class="max-w-7xl mx-auto px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h1 class="text-4xl md:text-6xl font-bold font-syne tracking-tight mb-4">
+            <div class="text-center mb-10">
+                <h1 class="text-3xl md:text-5xl font-bold font-syne tracking-tight mb-3">
                     Our <span class="text-emerald-500 italic">Gallery</span>
                 </h1>
-                <p class="text-gray-400 text-lg max-w-2xl mx-auto">
+                <p class="text-gray-400 text-base max-w-2xl mx-auto">
                     Explore our collection of premium Channa specimens through our curated video gallery
                 </p>
             </div>
@@ -56,16 +56,16 @@
             <!-- Interactive Video Gallery -->
             <div class="max-w-6xl mx-auto">
                 <!-- Main Player -->
-                <div class="glass rounded-3xl p-4 md:p-8 mb-8">
+                <div class="glass rounded-3xl p-3 md:p-6 mb-6">
                     <div class="aspect-video w-full bg-black/50 rounded-2xl overflow-hidden shadow-2xl relative group">
                          <video id="mainPlayer" controls poster="{{ asset('images/hero.png') }}" class="w-full h-full object-cover">
                             <source src="{{ asset('images/gallery-video.mp4') }}" type="video/mp4">
                             Your browser does not support the video tag.
                         </video>
                     </div>
-                    <div class="mt-6 text-center">
-                        <h3 id="videoTitle" class="text-xl md:text-3xl font-bold font-syne text-white mb-2">Premium Channa Collection</h3>
-                        <p id="videoSubtitle" class="text-emerald-400 font-medium tracking-wide">Channa Auranti</p>
+                    <div class="mt-4 text-center">
+                        <h3 id="videoTitle" class="text-lg md:text-2xl font-bold font-syne text-white mb-1">Elegant & Fierce</h3>
+                        <p id="videoSubtitle" class="text-emerald-400 text-sm font-medium tracking-wide">The Beauty of Movement</p>
                     </div>
                 </div>
 

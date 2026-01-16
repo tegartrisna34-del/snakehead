@@ -13,7 +13,12 @@ class ProductController extends Controller
         $speciesCategories = \App\Models\Category::where('slug', '!=', 'supplies')
             ->with(['products' => function($q) {
                 $q->where('is_active', true)
-                  ->orderByRaw("FIELD(name, 'Grade A+', 'Grade A', 'Grade B', 'Standard') ASC") // Try to sort by grade if possible, but names are dynamic
+                  ->orderByRaw("CASE 
+                        WHEN name LIKE '%Grade A+%' THEN 1 
+                        WHEN name LIKE '%Grade A%' AND name NOT LIKE '%Grade A+%' THEN 2 
+                        WHEN name LIKE '%Grade B%' THEN 3 
+                        ELSE 4 
+                    END ASC")
                   ->orderBy('name', 'ASC');
             }])
             ->get();
@@ -42,7 +47,17 @@ class ProductController extends Controller
     public function category($slug)
     {
         $category = \App\Models\Category::where('slug', $slug)->firstOrFail();
-        $products = $category->products()->where('is_active', true)->with('category')->get();
+        $products = $category->products()
+            ->where('is_active', true)
+            ->with('category')
+            ->orderByRaw("CASE 
+                WHEN name LIKE '%Grade A+%' THEN 1 
+                WHEN name LIKE '%Grade A%' AND name NOT LIKE '%Grade A+%' THEN 2 
+                WHEN name LIKE '%Grade B%' THEN 3 
+                ELSE 4 
+            END ASC")
+            ->orderBy('name', 'ASC')
+            ->get();
 
         // also provide categories for the header/mega-menu
         $categories = \App\Models\Category::with(['products' => function($q) {

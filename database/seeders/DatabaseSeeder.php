@@ -35,51 +35,48 @@ class DatabaseSeeder extends Seeder
                 'slug' => Str::slug($catData['name'])
             ]);
 
-            if ($catData['name'] === 'Channa Maru') {
-                // Specific requested order for Channa Maru
-                $maruProducts = [
-                    [
-                        'name' => 'Channa Maru Grade A+',
-                        'image' => 'images/channa_maru_grade_aplus.png',
-                        'price' => 5000000,
-                    ],
-                    [
-                        'name' => 'Channa Maru Grade A',
-                        'image' => 'images/channa_maru_grade_a.png',
-                        'price' => 2500000,
-                    ],
-                    [
-                        'name' => 'Channa Maru Standard',
-                        'image' => 'images/channa_maru_standard.png',
-                        'price' => 750000,
-                    ],
-                ];
+            // Define grades, prices, and default images for each type
+            $grades = [
+                ['name' => 'Grade A+', 'price' => 0, 'image' => 'images/channa_maru_grade_aplus.png'],
+                ['name' => 'Grade A', 'price' => 0, 'image' => 'images/channa-blue-sample.png'],
+                ['name' => 'Grade B', 'price' => 0, 'image' => 'images/thumb-1.png'],
+                ['name' => 'Bahan', 'price' => 0, 'image' => 'images/thumb-2.png'],
+            ];
 
-                foreach ($maruProducts as $maru) {
-                    Product::create([
-                        'category_id' => $category->id,
-                        'name' => $maru['name'],
-                        'slug' => Str::slug($maru['name'] . '-' . rand(100, 999)),
-                        'image' => $maru['image'],
-                        'description' => 'Spesimen terbaik dengan pola bunga (flower) yang tegas, warna kuning/oranye yang cerah, dan mental yang agresif. Pilihan utama untuk kontes.',
-                        'price' => $maru['price'],
-                        'stock' => rand(1, 10),
-                        'is_active' => true
-                    ]);
-                }
-            } else {
-                // Other categories
-                for ($i = 1; $i <= 2; $i++) {
-                    Product::create([
-                        'category_id' => $category->id,
-                        'name' => $catData['name'] . ' Grade ' . ($i == 1 ? 'A' : 'B'),
-                        'slug' => Str::slug($catData['name'] . '-' . $i . '-' . rand(100, 999)),
-                        'description' => 'Ikan predator eksotis dengan karakteristik unik. Dipilih langsung dari indukan berkualitas.',
-                        'price' => rand(500000, 2000000),
-                        'stock' => rand(1, 10),
-                        'is_active' => true
-                    ]);
-                }
+            if ($catData['name'] === 'Channa Maru') {
+                $grades[0]['price'] = 2000000;
+                $grades[1]['price'] = 800000;
+                $grades[2]['price'] = 400000;
+                $grades[3]['price'] = 150000;
+            } elseif ($catData['name'] === 'Channa Pulchra') {
+                $grades[0]['price'] = 500000;
+                $grades[1]['price'] = 350000;
+                $grades[2]['price'] = 200000;
+                $grades[3]['price'] = 85000;
+                // Specific Pulchra images if available, otherwise defaults
+            } elseif ($catData['name'] === 'Channa Auranti') {
+                $grades[0]['price'] = 3000000;
+                $grades[1]['price'] = 1500000;
+                $grades[2]['price'] = 800000;
+                $grades[3]['price'] = 450000;
+            } elseif ($catData['name'] === 'Channa Barca') {
+                $grades[0]['price'] = 50000000;
+                $grades[1]['price'] = 20000000;
+                $grades[2]['price'] = 1000000;
+                $grades[3]['price'] = 600000;
+            }
+
+            foreach ($grades as $index => $g) {
+                Product::create([
+                    'category_id' => $category->id,
+                    'name' => $catData['name'] . ' ' . $g['name'],
+                    'slug' => Str::slug($catData['name'] . '-' . $g['name'] . '-' . rand(100, 999)),
+                    'description' => $catData['name'] . ' ' . $g['name'] . ' pilihan dengan potensi warna dan mental yang menjanjikan. Sangat cocok untuk kolektor.',
+                    'image' => $g['image'],
+                    'price' => $g['price'],
+                    'stock' => rand(1, 15),
+                    'is_active' => true
+                ]);
             }
         }
     }
